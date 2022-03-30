@@ -135,7 +135,7 @@ class HeaderList:
                 self.bottom=newNode
             else:
                 pointer: HeaderNode =self.head
-                while pointer !=None:
+                while pointer != None:
                     if newNode.id < pointer.id:
                         newNode.next = pointer
                         newNode.back = pointer.back
@@ -157,10 +157,8 @@ class HeaderList:
 
     def getHeader(self, id):
         pointer = self.head
-
         while pointer != None:
             if id == pointer.id:
                 return pointer
             pointer = pointer.next
-            
-            return None
+        return None

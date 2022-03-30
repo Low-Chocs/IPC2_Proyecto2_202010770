@@ -36,6 +36,12 @@ class CellNode:
     
     def setBack(self, back):
         self.back = back
+    
+    def getColor(self):
+        return self.color
+    
+    def setColor(self, color):
+        self.color = color
 
 class SparceMatrix:
 
@@ -47,7 +53,7 @@ class SparceMatrix:
     def insert(self, posX, posY, color):
         newNode = CellNode(posX, posY, color)
         nodeX = self.row.getHeader(posX)
-        nodeY = self.row.getHeader(posY)
+        nodeY = self.columns.getHeader(posY)
         
         if nodeX == None:
             nodeX = HeaderNode(posX)
@@ -61,6 +67,7 @@ class SparceMatrix:
             nodeX.setAccess(newNode)
 
         else:
+            
             if newNode.posX < nodeX.getAccess().posY:
                 newNode.setNext(nodeX.getAccess())
                 nodeX.getAccess().setBack(newNode)
@@ -117,3 +124,52 @@ class SparceMatrix:
                             break
                         else:
                             pointer2 = pointer2.getDown()
+
+    def checkRow(self, row):
+        header : HeaderNode = self.row.getHeader(row)
+        if header == None:
+            print('Esa coordenada de row no existe')
+            return None
+            
+        pointer : CellNode = header.getAccess()
+        while pointer != None:
+            print(pointer.color)
+            pointer = pointer.getNext()
+
+    
+    def checkColumn(self, column):
+        header : HeaderNode = self.columns.getHeader(column)
+        if header == None:
+            print('Esa coordenada de columna no existe')
+            return None
+
+        pointer : CellNode = header.getAccess()
+        while pointer != None:
+            print(pointer.color)
+            pointer = pointer.getDown()
+
+
+    def search(self, row, column):
+        try:
+            pointer : CellNode = self.row.getHeader(row).getAccess()
+            while pointer != None:
+                if pointer.posX == row and pointer.posY == column:
+                    return pointer
+                pointer = pointer.getNext()
+            return None
+        except:
+            print('Coordenada no encontrada')
+            return None
+
+array = SparceMatrix()
+array.insert(6,5,"ORAL")
+array.insert(4,2,"AMIGO")
+array.insert(1,2,"NEGRO")
+array.insert(1,3,"NEGRO22222")
+array.insert(1,1,"BLANCO")
+array.insert(5,1,"NEGRO2222")
+array.insert(5,8,"NEGRO2222")
+array.insert(6,3,"ORIGINAL")
+ 
+array.checkColumn(2)
+

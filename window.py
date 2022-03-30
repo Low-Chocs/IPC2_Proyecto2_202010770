@@ -8,6 +8,7 @@ from lists import CityList
 loadedFile=False
 cities=CityList()
 
+
 def loadFile(): 
 	global loadedFile                                                    
 	route = filedialog.askopenfilename(title="Select A file", filetypes=(('xml files','*.xml'),('all files','*.*')))  
@@ -34,6 +35,8 @@ def cityFrameOn():
 def cityFrameOff():
     mainFrame.pack(fill="both", expand="yes")                                                       
     cityFrame.pack_forget()
+
+
 
 
 #We create the window
