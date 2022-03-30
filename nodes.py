@@ -96,3 +96,34 @@ class RobotNode:
     def setNext(self, next):
         self.next=next
 
+class HeaderNode():
+    def __init__(self, id):
+        self.id=id
+        self.next=None
+        self.back=None
+        self.access=None
+    
+    def getNext(self):
+        return self.next
+    
+    def setNext(self, next):
+        self.next=next
+
+    def getBack(self):
+        return self.back
+    
+    def setBack(self, back):
+        self.back=back
+    
+    def getAccess(self):
+        return self.access
+    
+    def setAccess(self, access):
+        self.access=access
+
+    def getId(self):
+        return self.id
+    
+    def setId(self, id):
+        self.id=id
+
