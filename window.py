@@ -1,25 +1,24 @@
-from json import load
 from tkinter import *
 from tkinter import N, filedialog
 from PIL import ImageTk, Image
 import os
 from lists import CityList
+from lists import RobotList
+from loadXml import loadXml
 
 loadedFile=False
 cities=CityList()
+robots=RobotList()
+load=loadXml(cities, robots)
 
 
 def loadFile(): 
-	global loadedFile                                                    
-	route = filedialog.askopenfilename(title="Select A file", filetypes=(('xml files','*.xml'),('all files','*.*')))  
-	
-	with open(route,"r") as file:
-		print(route)
-		file.close()
-	
-	if route!=None:
-		loadedFile=True
-		warning.place(x=375,y=1060)
+    global loadedFile                 
+                                  
+    route = filedialog.askopenfilename(title="Select A file", filetypes=(('xml files','*.xml'),('all files','*.*'))) 
+    load.elementTree(route)
+    load.showCity()
+    
 
 def cityFrameOn():
     global loadedFile

@@ -1,4 +1,4 @@
-from platform import node
+from pyparsing import col
 from nodes import HeaderNode
 from lists import HeaderList
 
@@ -8,10 +8,17 @@ class CellNode:
         self.color = color
         self.posX = posX
         self.posY = posY
+        self.capacity=0
         self.up = None
         self.down = None
         self.next = None
         self.back = None
+    
+    def setCapacity(self, capacity):
+        self.capacity = capacity
+
+    def getCapacity(self):
+        return self.capacity
 
     def setUp(self, up):
         self.up = up
@@ -49,11 +56,19 @@ class SparceMatrix:
         self.cap = 0
         self.row = HeaderList('fila')
         self.columns = HeaderList('columns')
+        self.rowSize=0
+        self.columnSize=0
 
     def insert(self, posX, posY, color):
         newNode = CellNode(posX, posY, color)
         nodeX = self.row.getHeader(posX)
         nodeY = self.columns.getHeader(posY)
+
+        if posX>self.rowSize:
+            self.rowSize=posX
+
+        if posY>self.columnSize:
+            self.columnSize=posY
         
         if nodeX == None:
             nodeX = HeaderNode(posX)
@@ -147,7 +162,18 @@ class SparceMatrix:
         while pointer != None:
             print(pointer.color)
             pointer = pointer.getDown()
-
+    
+    def rowSize(self):
+        return self.rowSize
+    
+    def columnSize(self):
+        return self.columnSize
+    
+    def editRow(self):
+        self.rowSize=0
+    
+    def editColumn(self):
+        self.ColumnSize=0
 
     def search(self, row, column):
         try:
@@ -160,6 +186,25 @@ class SparceMatrix:
         except:
             print('Coordenada no encontrada')
             return None
+    
+    def showNode(self, row, column):
+        try:
+            pointer : CellNode = self.row.getHeader(row).getAccess()
+            while pointer != None:
+                if pointer.posX == row and pointer.posY == column:
+                    return 'La pos x: {} la pos y: {} color: {}'.format(pointer.posX, pointer.posY, pointer.getColor())
+                pointer = pointer.getNext()
+            return
+        except:
+            print('Coordenada no encontrada')
+            return
+    
+    def printAll(self):
+
+        for i in range(1,self.rowSize+1):
+            for j in range(1,self.columnSize+1):
+                print(self.showNode(i, j))
+
 
 array = SparceMatrix()
 array.insert(6,5,"ORAL")
@@ -171,5 +216,4 @@ array.insert(5,1,"NEGRO2222")
 array.insert(5,8,"NEGRO2222")
 array.insert(6,3,"ORIGINAL")
  
-array.checkColumn(2)
 

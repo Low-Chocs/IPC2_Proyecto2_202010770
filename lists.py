@@ -1,6 +1,4 @@
-from email import header
 from nodes import CityNode
-from nodes import MilitarUnitNode as MilitarNode
 from nodes import RobotNode 
 from nodes import HeaderNode
 
@@ -11,9 +9,9 @@ class CityList:
         self.bottom= None
         self.size=0
 
-    def insert(self, city, cityArray, militarList):
+    def insert(self, city, cityArray):
 
-        newCity=CityNode(city, cityArray, militarList)
+        newCity=CityNode(city, cityArray)
 
         if self.head is None:
             self.head =newCity
@@ -26,7 +24,6 @@ class CityList:
             for i in range(self.size):
                 if pointer.getCity()==city:
                     pointer.setCityArray(cityArray)
-                    pointer.setMilitarList(militarList)
                     proof=False
                     break
                 pointer=pointer.getNext()
@@ -36,16 +33,24 @@ class CityList:
                 self.bottom= newCity
                 self.size+=1
     
+    def returnArray(self, city):
+        pointer = self.head
+
+        while pointer != None:
+            if pointer.getCity() == city:
+                    return pointer
+            pointer = pointer.getNext()
+
+    
     def show(self):
-        printer=self.head
+        pointer: CityNode=self.head
         var=""
         for i in range(self.size):
-            var+="Ciudad: {}, Matriz {}, Lista Militar: {} \n".format(printer.getCity(), 
-            printer.getCityArray(), printer.getMilitarList())
-
-            printer=printer.getNext()
+            disperseArray = pointer.getCityArray()
+            disperseArray.printAll()
+            pointer = pointer.next
         return var
-    
+
     def showInRange(self, j):
         printer=self.head
         for i in range(self.size):
@@ -53,29 +58,8 @@ class CityList:
                 return printer.getCity()
             printer=printer.getNext()
 
-        
-    
     def len(self):
         return self.size
-
-class MilitarList:
-
-    def __init__(self):
-        self.head= None
-        self.bottom= None
-        self.size=0
-
-    def insert(self, x,y, capacity):
-
-        newMilitarUnit=MilitarNode(x,y,capacity)
-        self.size+=1
-
-        if self.head is None:
-            self.head =newMilitarUnit
-            self.bottom= newMilitarUnit
-        else:
-            self.bottom.setNext(newMilitarUnit)
-            self.bottom= newMilitarUnit
 
 class RobotList:
     
@@ -100,7 +84,7 @@ class RobotList:
         printer=self.head
         var=""
         for i in range(self.size):
-            if printer.getCapacity>0:
+            if printer.getCapacity()>0:
                 var+="Nombre del robot: {}, de tipo {}, con la capcidad de batalla de: {} \n".format(printer.getName(), 
                 printer.getType(), printer.getCapacity())
             else:
@@ -162,3 +146,4 @@ class HeaderList:
                 return pointer
             pointer = pointer.next
         return None
+
