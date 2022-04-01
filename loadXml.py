@@ -38,8 +38,6 @@ class loadXml:
                                         self.array.insert(row, column, "gray")
                                     elif char == 'C':
                                         self.array.insert(row, column, "blue")
-                                    elif char == '*':
-                                        self.array.insert(row, column, "black")
                                     elif char == ' ':
                                         self.array.insert(row, column, "white")
 
@@ -47,8 +45,11 @@ class loadXml:
                             militaryRow = subelement2.attrib['fila']
                             militaryColumn = subelement2.attrib['columna']
                             militaryCapacity = subelement2.text
-                            self.array.search(int(militaryRow), int(militaryColumn)).setColor('red')
-                            self.array.search(int(militaryRow), int(militaryColumn)).setCapacity(int(militaryCapacity))
+                            if self.array.search(int(militaryRow), int(militaryColumn)) != None:
+                                self.array.search(int(militaryRow), int(militaryColumn)).setColor('red')
+                                self.array.search(int(militaryRow), int(militaryColumn)).setCapacity(int(militaryCapacity))
+                            else:
+                                self.array.insert(int(militaryRow), int(militaryColumn), "red")
 
                     self.cityList.insert(cityName, self.array)
                     self.array = SparceMatrix()
@@ -65,10 +66,7 @@ class loadXml:
                             robotCapacity=0
                         else:
                             robotCapacity = int(subelement2.attrib['capacidad'])
-                        print(subelement2.text)
                         self.robotList.insert(robotType, int(robotCapacity), robotName)
-
-                print(self.robotList.show())
 
     def showCity(self):
         self.cityList.show()

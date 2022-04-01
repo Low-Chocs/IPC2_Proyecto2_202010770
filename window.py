@@ -17,7 +17,10 @@ def loadFile():
                                   
     route = filedialog.askopenfilename(title="Select A file", filetypes=(('xml files','*.xml'),('all files','*.*'))) 
     load.elementTree(route)
-    load.showCity()
+    #cities.showInverse()
+    #load.showCity()
+    if cities.len() >0:
+        loadedFile=True
     
 
 def cityFrameOn():
@@ -26,14 +29,18 @@ def cityFrameOn():
         mainFrame.pack_forget()
         cityFrame.pack(fill="both", expand="yes")
         warning.place(x=375,y=1060)
-        for i in range(list.len()):
-            cityBox.insert(END, list.showInRange(i))
+        cityBox.delete(0,END)
+        for i in range(cities.len()):
+            cityBox.insert(END, cities.showInRange(i))
     else:
         warning.place(x=375,y=460)
 
 def cityFrameOff():
     mainFrame.pack(fill="both", expand="yes")                                                       
     cityFrame.pack_forget()
+
+def graphArray():
+    pass
 
 
 

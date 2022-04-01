@@ -1,8 +1,9 @@
 class CityNode:
     def __init__(self, city, cityArray):
-        self.city=city
-        self.cityArray=cityArray
-        self.next=None
+        self.city = city
+        self.cityArray = cityArray
+        self.next = None
+        self.back = None
     
     def getCity(self):
         return self.city
@@ -21,6 +22,12 @@ class CityNode:
     
     def setNext(self, next):
         self.next=next
+    
+    def getBack(self):
+        return self.back
+    
+    def setBack(self, back):
+        self.back = back
 
 class RobotNode:
 

@@ -184,7 +184,6 @@ class SparceMatrix:
                 pointer = pointer.getNext()
             return None
         except:
-            print('Coordenada no encontrada')
             return None
     
     def showNode(self, row, column):
@@ -194,26 +193,12 @@ class SparceMatrix:
                 if pointer.posX == row and pointer.posY == column:
                     return 'La pos x: {} la pos y: {} color: {}'.format(pointer.posX, pointer.posY, pointer.getColor())
                 pointer = pointer.getNext()
-            return
+            return None
         except:
-            print('Coordenada no encontrada')
-            return
+            return None
     
     def printAll(self):
 
         for i in range(1,self.rowSize+1):
             for j in range(1,self.columnSize+1):
                 print(self.showNode(i, j))
-
-
-array = SparceMatrix()
-array.insert(6,5,"ORAL")
-array.insert(4,2,"AMIGO")
-array.insert(1,2,"NEGRO")
-array.insert(1,3,"NEGRO22222")
-array.insert(1,1,"BLANCO")
-array.insert(5,1,"NEGRO2222")
-array.insert(5,8,"NEGRO2222")
-array.insert(6,3,"ORIGINAL")
- 
-
