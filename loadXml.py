@@ -40,6 +40,9 @@ class loadXml:
                                         self.array.insert(row, column, "blue")
                                     elif char == ' ':
                                         self.array.insert(row, column, "white")
+                                    elif char == '*':
+                                        self.array.insert(row, column, "black")
+                                    
 
                         elif subelement2.tag == 'unidadMilitar':
                             militaryRow = subelement2.attrib['fila']

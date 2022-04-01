@@ -39,7 +39,7 @@ class CityList:
                             if city > self.bottom.getCity():
                                 print("Numero " ,str(i))
                                 self.bottom.setNext(newCity)
-                                self.bottom.setBack(self.bottom)
+                                newCity.setBack(self.bottom)
                                 self.bottom = newCity
                                 print(self.bottom.getBack())
                                 self.size += 1
@@ -76,13 +76,6 @@ class CityList:
                             break
 
 
-
-    def getListElement(self, i):
-        printer = self.head
-        for j in range(self.size):
-            if i == j:
-                return printer
-            printer.getNext()
         
     def returnArray(self, city):
         pointer = self.head
@@ -90,7 +83,7 @@ class CityList:
 
         while pointer != None:
             if pointer.getCity() == city:
-                    return pointer
+                    return pointer.getCityArray()
             pointer = pointer.getNext()
 
     
@@ -127,35 +120,6 @@ class CityList:
         for i in range(self.size):
             print(printer.getCity())
             printer = printer.getBack()
-
-    """   def sortByAlphabetical(self):
-        pointer = self.head
-
-        if self.size > 1:
-            for i in range(self.size): 
-                for j in range(self.size-2):
-                    pointer2 = pointer.getNext()
-                    if pointer.getCity() > pointer.getNext().getCity():
-                        if pointer.getNext().getNext() != NoneType:
-                            pointer.setNext(pointer.getNext().getNext())
-                        if pointer.getNext() != None:
-                            pointer.getNext().getBack().setNext(pointer)
-                        if pointer.getNext() != None:
-                            pointer.getNext().getBack().setNext(pointer.getBack())
-                        if pointer.getNext() != None:
-                            pointer.setBack(pointer.getNext().getBack())
-                        if pointer.getBack() != None:
-                            if pointer.getBack().getBack() != None:
-                                pointer.getBack().getBack().setNext(pointer.getBack())
-                        if pointer.getNext() != None:
-                            pointer.getNext().setBack(pointer)
-                        else:
-                            pointer.getNext().setNext(pointer)
-                            pointer.setBack(pointer.getNext())
-                            pointer.getBack().setBack(None)
-                            pointer.getNext(None)
-                    pointer = pointer2 """
-
 
 
     def len(self):

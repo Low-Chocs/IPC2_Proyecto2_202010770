@@ -1,6 +1,9 @@
+from re import X
 from pyparsing import col
 from nodes import HeaderNode
 from lists import HeaderList
+import webbrowser
+import os
 
 class CellNode:
 
@@ -202,3 +205,109 @@ class SparceMatrix:
         for i in range(1,self.rowSize+1):
             for j in range(1,self.columnSize+1):
                 print(self.showNode(i, j))
+
+    def graphArray(self, city):
+        graphArray = '''
+        digraph G{
+        node[shape=box, width=0.7, height=0.7, fontname="Arial", fillcolor="white", style=filled]
+        edge[style = "bold"]
+        node[label = "capa: 0 " fillcolor="darkolivegreen1" pos = "-1,1!"]raiz;'''
+
+        graphArray += '''label = "{}" \nfontname="Arial Black" \nfontsize="25pt" \n
+                    \n'''.format(city)
+        
+        headerX = self.row.head
+        x = 0
+
+        while headerX != None:
+            graphArray += '\n\tnode[label = "F{}" fillcolor="azure3" pos="-1,-{}!" shape=box]x{};'.format(headerX.id, x, headerX.id)
+            headerX = headerX.next
+            x += 1
+        
+        headerX = self.row.head
+        while headerX.getNext() != None:
+            graphArray += '\n\tx{}->x{};'.format(headerX.getId(), headerX.getNext().getId())
+            graphArray += '\n\tx{}->x{}[dir=back];'.format(headerX.getId(), headerX.getNext().getId())
+            headerX = headerX.getNext()
+        graphArray += '\n\traiz->x{};'.format(self.row.head.getId())
+
+        headerY = self.columns.head
+        y = 0
+
+        while headerY != None:
+            graphArray += '\n\tnode[label = "C{}" fillcolor="azure3" pos="{},1!" shape=box]y{};'.format(headerY.id, y, headerY.id)
+            headerY = headerY.next
+            y += 1
+        
+        headerY = self.columns.head
+        while headerY.getNext() != None:
+            graphArray += '\n\ty{}->y{};'.format(headerY.getId(), headerY.getNext().getId())
+            graphArray += '\n\ty{}->y{}[dir=back];'.format(headerY.getId(), headerY.getNext().getId())
+            headerY = headerY.getNext()
+        graphArray += '\n\traiz->y{};'.format(self.columns.head.getId())
+
+        header = self.row.head
+        x = 0
+        while header != None:
+            zelda : CellNode = header.getAccess()
+            while zelda != None:
+                headerY = self.columns.head
+                zeldaInY =0
+                while headerY != None:
+                    if headerY.getId() == zelda.posY: 
+                        break
+                    zeldaInY += 1 
+                    headerY = headerY.next
+
+                if zelda.getColor() == 'green':
+                     graphArray += '\n\tnode[label="*" fillcolor="green" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                elif zelda.getColor() == 'gray':
+                     graphArray += '\n\tnode[label="*" fillcolor="gray" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                elif zelda.getColor() == 'blue':
+                     graphArray += '\n\tnode[label="*" fillcolor="blue" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                elif zelda.getColor() == 'white':
+                     graphArray += '\n\tnode[label="*" fillcolor="white" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                elif zelda.getColor() == 'red':
+                     graphArray += '\n\tnode[label="*" fillcolor="red" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                elif zelda.getColor() == 'black':
+                     graphArray += '\n\tnode[label="*" fillcolor="black" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                zelda = zelda.getNext()
+
+
+            zelda = header.getAccess()
+            while zelda.getNext() != None:
+                if zelda.getNext() != None:
+                    graphArray += '\n\ti{}_{}->i{}_{};'.format(zelda.posX, zelda.posY,zelda.next.posX, zelda.next.posY)
+                    graphArray += '\n\ti{}_{}->i{}_{}[dir=back];'.format(zelda.posX, zelda.posY,zelda.next.posX, zelda.next.posY)
+                zelda = zelda.next
+
+            graphArray += '\n\tx{}->i{}_{};'.format(header.id, header.getAccess().posX, header.getAccess().posY)
+            graphArray += '\n\tx{}->i{}_{}[dir=back];'.format(header.id, header.access.posX, header.access.posY)
+            header = header.next
+            x += 1
+
+        headerY = self.columns.head
+        while headerY != None:
+            zeldaY : CellNode = headerY.access
+            while zeldaY != None:
+                if zeldaY.down != None:
+                    graphArray += '\n\ti{}_{}->i{}_{};'.format(zeldaY.posX, zeldaY.posY,
+                    zeldaY.down.posX, zeldaY.down.posY)
+                    graphArray += '\n\ti{}_{}->i{}_{}[dir=back];'.format(zeldaY.posX, zeldaY.posY,
+                    zeldaY.down.posX, zeldaY.down.posY) 
+                zeldaY = zeldaY.down
+            graphArray += '\n\ty{}->i{}_{};'.format(headerY.id, headerY.access.posX, headerY.access.posY)
+            graphArray += '\n\ty{}->i{}_{}[dir=back];'.format(headerY.id, headerY.access.posX, headerY.access.posY)
+            headerY = headerY.next
+
+        graphArray += '\n}'
+
+        dot = "matriz.txt".format(city)
+        print("Ya llegue aqui")
+        with open(dot, 'w') as grafo:
+            grafo.write(graphArray)
+        result = "matriz.pdf".format(city)
+        os.system("neato -Tpdf " + dot + " -o " + result)
+        webbrowser.open(result) 
+
+                

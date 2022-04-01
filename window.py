@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import N, filedialog
 from PIL import ImageTk, Image
-import os
+from Array import SparceMatrix
 from lists import CityList
 from lists import RobotList
 from loadXml import loadXml
@@ -17,8 +17,6 @@ def loadFile():
                                   
     route = filedialog.askopenfilename(title="Select A file", filetypes=(('xml files','*.xml'),('all files','*.*'))) 
     load.elementTree(route)
-    #cities.showInverse()
-    #load.showCity()
     if cities.len() >0:
         loadedFile=True
     
@@ -40,18 +38,17 @@ def cityFrameOff():
     cityFrame.pack_forget()
 
 def graphArray():
-    pass
-
-
-
-
-#We create the window
+    graph = cityBox.get(ACTIVE)
+    matrix : SparceMatrix = cities.returnArray(graph)
+    matrix.printAll()
+    matrix.graphArray(graph)
+    
+#Window
 root=Tk()
 myMenu=Menu(root)
 root.config(menu=myMenu)
 root.title("IPC2 Proyecto 2 202010770")
 root.geometry("850x500")
-
 img = ImageTk.PhotoImage(Image.open("image/sol.jpg"))
 
 #Label frames
@@ -74,7 +71,7 @@ cityBox = Listbox(cityFrame, height=18, width=110)
 cityBox.place(x=130, y=75)
 
 
-#Here comes the buttons
+#Buttons
 selectFileButton = Button(mainFrame, text="Seleccionar Archivo XML", width=25, height=5, command=loadFile)
 selectFileButton.pack()
 selectFileButton.place(x=355, y=100)
@@ -87,7 +84,7 @@ selectCityBack = Button(cityFrame, text="Regresar", width=15, height=3, command=
 selectCityBack.pack()
 selectCityBack.place(x=10, y=10)
 
-showGraphBotton= Button(cityFrame, text="Mostrar Ciudad", width=25, height=3, command=cityFrameOn)
+showGraphBotton= Button(cityFrame, text="Graficar Ciudad", width=25, height=3, command=graphArray)
 showGraphBotton.pack()
 showGraphBotton.place(x=235, y=400)
 
@@ -99,4 +96,5 @@ operations = Button(mainFrame, text="Operaciones", width=25, height=5, command=c
 operations.pack()
 operations.place(x=355, y=300)
 
+#Loop
 root.mainloop()
