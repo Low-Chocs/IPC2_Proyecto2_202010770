@@ -59,10 +59,22 @@ class SparceMatrix:
         self.cap = 0
         self.row = HeaderList('fila')
         self.columns = HeaderList('columns')
-        self.rowSize=0
-        self.columnSize=0
+        self.rowSize = 0
+        self.columnSize = 0
+        self.resourceCounter = 0
+        self.civilUnit = 0
+        self.entry = 0
 
     def insert(self, posX, posY, color):
+
+        if color == "gray":
+            self.resourceCounter += 1
+        if color == "green":
+            self.entry += 1
+        if color == "blue":
+            self.civilUnit += 1 
+            
+
         newNode = CellNode(posX, posY, color)
         nodeX = self.row.getHeader(posX)
         nodeY = self.columns.getHeader(posY)
@@ -143,6 +155,20 @@ class SparceMatrix:
                         else:
                             pointer2 = pointer2.getDown()
 
+    def getResourceCounter(self):
+        return self.resourceCounter
+
+    def getCivilCounter(self):
+        return int(self.civilUnit)
+    
+    def getEntryCounter(self):
+        return self.entry
+    
+    def getValues(self):
+        print("Tuve un")
+        return "La cantidad de entradas: {} La cantidad de recursos: {} La cantidad de unidades civiles: {}".format(self.entry, self.resourceCounter, self.civilUnit)
+
+
     def checkRow(self, row):
         header : HeaderNode = self.row.getHeader(row)
         if header == None:
@@ -210,8 +236,8 @@ class SparceMatrix:
         graphArray = '''
         digraph G{
         node[shape=box, width=0.7, height=0.7, fontname="Arial", fillcolor="white", style=filled]
-        edge[style = "bold"]
-        node[label = "capa: 0 " fillcolor="darkolivegreen1" pos = "-1,1!"]raiz;'''
+        edge[style = "invisible" dir="none"]
+        node[ fillcolor="yellow" pos = "-1,1!" ]raiz;'''
 
         graphArray += '''label = "{}" \nfontname="Arial Black" \nfontsize="25pt" \n
                     \n'''.format(city)
@@ -220,14 +246,14 @@ class SparceMatrix:
         x = 0
 
         while headerX != None:
-            graphArray += '\n\tnode[label = "F{}" fillcolor="azure3" pos="-1,-{}!" shape=box]x{};'.format(headerX.id, x, headerX.id)
+            graphArray += '\n\tnode[label = "{}" fillcolor="azure3" pos="-1,-{}!" shape=box]x{};'.format(headerX.id, x, headerX.id)
             headerX = headerX.next
             x += 1
         
         headerX = self.row.head
         while headerX.getNext() != None:
-            graphArray += '\n\tx{}->x{};'.format(headerX.getId(), headerX.getNext().getId())
-            graphArray += '\n\tx{}->x{}[dir=back];'.format(headerX.getId(), headerX.getNext().getId())
+            graphArray += '\n\tx{}->x{}[style=invis];'.format(headerX.getId(), headerX.getNext().getId())
+            graphArray += '\n\tx{}->x{}[style=invis];'.format(headerX.getId(), headerX.getNext().getId())
             headerX = headerX.getNext()
         graphArray += '\n\traiz->x{};'.format(self.row.head.getId())
 
@@ -235,14 +261,14 @@ class SparceMatrix:
         y = 0
 
         while headerY != None:
-            graphArray += '\n\tnode[label = "C{}" fillcolor="azure3" pos="{},1!" shape=box]y{};'.format(headerY.id, y, headerY.id)
+            graphArray += '\n\tnode[label = "{}" fillcolor="azure3" pos="{},1!" shape=box]y{};'.format(headerY.id, y, headerY.id)
             headerY = headerY.next
             y += 1
         
         headerY = self.columns.head
         while headerY.getNext() != None:
-            graphArray += '\n\ty{}->y{};'.format(headerY.getId(), headerY.getNext().getId())
-            graphArray += '\n\ty{}->y{}[dir=back];'.format(headerY.getId(), headerY.getNext().getId())
+            graphArray += '\n\ty{}->y{}[style=invis];'.format(headerY.getId(), headerY.getNext().getId())
+            graphArray += '\n\ty{}->y{}[style=invis];'.format(headerY.getId(), headerY.getNext().getId())
             headerY = headerY.getNext()
         graphArray += '\n\traiz->y{};'.format(self.columns.head.getId())
 
@@ -260,15 +286,15 @@ class SparceMatrix:
                     headerY = headerY.next
 
                 if zelda.getColor() == 'green':
-                     graphArray += '\n\tnode[label="*" fillcolor="green" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                     graphArray += '\n\tnode[label="A" fillcolor="green" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
                 elif zelda.getColor() == 'gray':
-                     graphArray += '\n\tnode[label="*" fillcolor="gray" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                     graphArray += '\n\tnode[label="R" fillcolor="gray" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
                 elif zelda.getColor() == 'blue':
-                     graphArray += '\n\tnode[label="*" fillcolor="blue" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                     graphArray += '\n\tnode[label="UC" fillcolor="blue" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
                 elif zelda.getColor() == 'white':
                      graphArray += '\n\tnode[label="*" fillcolor="white" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
                 elif zelda.getColor() == 'red':
-                     graphArray += '\n\tnode[label="*" fillcolor="red" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
+                     graphArray += '\n\tnode[label="UM" fillcolor="red" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
                 elif zelda.getColor() == 'black':
                      graphArray += '\n\tnode[label="*" fillcolor="black" pos="{},-{}!" shape=box]i{}_{};'.format(zeldaInY, x, zelda.posX, zelda.posY)
                 zelda = zelda.getNext()
@@ -277,12 +303,12 @@ class SparceMatrix:
             zelda = header.getAccess()
             while zelda.getNext() != None:
                 if zelda.getNext() != None:
-                    graphArray += '\n\ti{}_{}->i{}_{};'.format(zelda.posX, zelda.posY,zelda.next.posX, zelda.next.posY)
-                    graphArray += '\n\ti{}_{}->i{}_{}[dir=back];'.format(zelda.posX, zelda.posY,zelda.next.posX, zelda.next.posY)
+                    graphArray += '\n\ti{}_{}->i{}_{}[style=invisible];'.format(zelda.posX, zelda.posY,zelda.next.posX, zelda.next.posY)
+                    graphArray += '\n\ti{}_{}->i{}_{}[style=invisible];'.format(zelda.posX, zelda.posY,zelda.next.posX, zelda.next.posY)
                 zelda = zelda.next
 
-            graphArray += '\n\tx{}->i{}_{};'.format(header.id, header.getAccess().posX, header.getAccess().posY)
-            graphArray += '\n\tx{}->i{}_{}[dir=back];'.format(header.id, header.access.posX, header.access.posY)
+            graphArray += '\n\tx{}->i{}_{}[style=invisible];'.format(header.id, header.getAccess().posX, header.getAccess().posY)
+            graphArray += '\n\tx{}->i{}_{}[style=invisible];'.format(header.id, header.access.posX, header.access.posY)
             header = header.next
             x += 1
 
@@ -291,13 +317,13 @@ class SparceMatrix:
             zeldaY : CellNode = headerY.access
             while zeldaY != None:
                 if zeldaY.down != None:
-                    graphArray += '\n\ti{}_{}->i{}_{};'.format(zeldaY.posX, zeldaY.posY,
+                    graphArray += '\n\ti{}_{}->i{}_{}[style=invis];'.format(zeldaY.posX, zeldaY.posY,
                     zeldaY.down.posX, zeldaY.down.posY)
-                    graphArray += '\n\ti{}_{}->i{}_{}[dir=back];'.format(zeldaY.posX, zeldaY.posY,
+                    graphArray += '\n\ti{}_{}->i{}_{}[style=invis];'.format(zeldaY.posX, zeldaY.posY,
                     zeldaY.down.posX, zeldaY.down.posY) 
                 zeldaY = zeldaY.down
-            graphArray += '\n\ty{}->i{}_{};'.format(headerY.id, headerY.access.posX, headerY.access.posY)
-            graphArray += '\n\ty{}->i{}_{}[dir=back];'.format(headerY.id, headerY.access.posX, headerY.access.posY)
+            graphArray += '\n\ty{}->i{}_{}[style=invis];'.format(headerY.id, headerY.access.posX, headerY.access.posY)
+            graphArray += '\n\ty{}->i{}_{}[style=invis];'.format(headerY.id, headerY.access.posX, headerY.access.posY)
             headerY = headerY.next
 
         graphArray += '\n}'

@@ -36,6 +36,7 @@ class RobotNode:
         self.name=name
         self.capacity=capacity
         self.next=None
+        self.back = None
     
     def getType(self):
         return self.type
@@ -60,6 +61,12 @@ class RobotNode:
     
     def setNext(self, next):
         self.next=next
+
+    def getBack(self):
+        return self.back
+    
+    def setBack(self, back):
+        self.back = back
 
 class HeaderNode():
     def __init__(self, id):

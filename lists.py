@@ -19,7 +19,7 @@ class CityList:
             self.head = newCity
             self.bottom = newCity
             self.head.setNext(self.bottom)
-            self.head.setBack(self.head)
+            self.bottom.setBack(self.head)
             self.size+=1
         else:
             pointer = self.head
@@ -75,18 +75,22 @@ class CityList:
                             self.size+=1
                             break
 
-
-        
     def returnArray(self, city):
+        print(city)
         pointer = self.head
-        counter = 0
-
         while pointer != None:
             if pointer.getCity() == city:
                     return pointer.getCityArray()
             pointer = pointer.getNext()
 
-    
+    def showCounters(self):
+        pointer = self.head
+        text = ""
+        while pointer != None:
+            text += pointer.getCityArray().getValues()+"\n"
+            pointer = pointer.getNext()
+        return text
+
     def show(self):
         pointer: CityNode=self.head
         var=""
@@ -135,15 +139,51 @@ class RobotList:
     def insert(self, type, capacity, name):
 
         newRobotWarrior=RobotNode(type, capacity, name)
-        self.size+=1
+        proof= True
 
         if self.head is None:
             self.head =newRobotWarrior
             self.bottom= newRobotWarrior
+            self.head.setNext(self.bottom)
+            self.bottom.setBack(self.head)
+            self.size+=1
         else:
-            self.bottom.setNext(newRobotWarrior)
-            self.bottom= newRobotWarrior
+            pointer = self.head
+            for i in range(self.size):
+                if pointer.getName()==name:
+                    pointer.setType(type)
+                    if pointer.getType() == "ChapinFighter":
+                        pointer.setCapacity(pointer.getCapacity() + capacity)
+                    else:
+                        pointer.setCapacity(capacity)
+                    proof=False
+                    break
+                pointer=pointer.getNext()
+
+            if proof:
+                self.bottom.setNext(newRobotWarrior)
+                newRobotWarrior.setBack(self.bottom)
+                self.bottom= newRobotWarrior
+                self.size+=1
     
+    def showInRange(self, j):
+        printer=self.head
+        for i in range(self.size):
+            if i==j and printer != NoneType:
+                return printer.getName()
+            printer=printer.getNext()
+
+    def returnRobot(self, name):
+    
+        pointer = self.head
+        while pointer != None:
+            if pointer.getName() == name:
+                    return pointer
+            pointer = pointer.getNext()
+    
+    def len(self):
+        return self.size
+        
     def show(self):
         printer=self.head
         var=""
@@ -157,6 +197,27 @@ class RobotList:
             printer=printer.getNext()
 
         return var  
+    
+    def returnByType(self, index, type):
+        printer = self.head
+        for i in range(self.size):
+            if i == index  and printer.getType() == type:
+                return "Tipo: {}, Nombre: {}, Capacidad de combate: {} ".format(printer.getType(), printer.getName(), printer.getCapacity())
+            elif i == index  and printer.getType() == type:
+                return "Tipo: {}, Nombre: {}, Capacidad de combate: 0 ".format(printer.getType(), printer.getName())
+            printer=printer.getNext()
+
+    def returnSelector(self, index, type):
+        printer = self.head
+        print(type)
+        counter=0
+        for i in range(self.size):
+            if printer.getType() == type:
+                counter += 1
+            if counter  == index:
+                return printer
+            printer = printer.getNext()
+
 
 class HeaderList:
 
