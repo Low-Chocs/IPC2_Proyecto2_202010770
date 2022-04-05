@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import N, filedialog
 from PIL import ImageTk, Image
 from matplotlib.pyplot import text
+from numpy import number
 from Array import SparceMatrix
 from lists import CityList
 from lists import RobotList
@@ -14,6 +15,11 @@ robots = RobotList()
 load = loadXml(cities, robots)
 city = ""
 robot = ""
+initialX = 0
+initialY = 0
+finalX = 0
+finalY = 0
+numberSelector = 0
 
 
 def loadFile(): 
@@ -26,7 +32,7 @@ def loadFile():
         loadedFile = True
 
     
-
+#CITY BUTTONS
 def cityFrameOn():
     global loadedFile
     if loadedFile:
@@ -50,6 +56,12 @@ def graphArray():
     matrix.printAll()
     matrix.graphArray(graph)
 
+def graphSelectedArray():
+    global city
+    matrix : SparceMatrix = cities.returnArray(city)
+    matrix.printAll()
+    matrix.graphArray(city)
+
 def selectNewCity():
     global selectedCity
     global city
@@ -58,8 +70,9 @@ def selectNewCity():
         selectedCity = True
         mainFrame.pack(fill="both", expand="yes")                                                       
         cityFrame.pack_forget()
+#CITY BUTTONS END
 
-
+#SELECT MISION
 def operationFrameOn():
     global loadedFile
     if loadedFile and selectedCity:
@@ -115,40 +128,164 @@ def extractionOperationFrameOff():
     extractionFrame.pack_forget()
 
 def extractSelection():
-    for i in robotFighterBox.curselection():
-        print(robots.returnSelector(i+1,"ChapinFighter").getName())
-
-def rescueSelection():
+    global initialY
+    global initialX
     global robot
     global city
     robot = ""
+    global numberSelector 
+    numberSelector = 0
 
-    for i in robotRescueBox.curselection():
-        robot = robots.returnSelector(i+1,"ChapinRescue").getName()
-
+    for i in robotFighterBox.curselection():
+        robot = robots.returnSelector(i+1,"ChapinFighter").getName()
+    
     if robot != "":
-        print("Yayui"+str(cities.returnArray(city).getEntryCounter()))
-
+        
         if cities.returnArray(city).getEntryCounter() > 1:                                                    
-            rescueFrame.pack_forget()
+            extractionFrame.pack_forget()
             selectEntryFrame.pack(fill="both", expand="yes")
             warning2.place(x=375,y=1060)
+            selectEntryBox.delete(0,END)
+            for j in range(cities.returnArray(city).returnRowSize()+1):
+                for k in range(cities.returnArray(city).returnColumnSize()+1):
+                    if cities.returnArray(city).search(j,k) != None:
+                        if cities.returnArray(city).search(j,k).getColor() == "green":
+                            selectEntryBox.insert(END, "Pos en x: {} Pos en y: {}".format(j,k))
 
         elif cities.returnArray(city).getEntryCounter() == 1:
-            
-            if cities.returnArray(city).getCivilCounter() > 1:                                                    
-                rescueFrame.pack_forget()
-                selectRescueFrame.pack(fill="both", expand="yes")
-                warning4.place(x=375,y=1060)
-            elif cities.returnArray(city).getCivilCounter() == 1:
-                print("Pase")
-            elif cities.returnArray(city).getCivilCounter() == 0:
-                warning2.place(x=375,y=460)
-                warning2.config(text="No se detecto ninguna unidad civil a rescatar")
+            for j in range(cities.returnArray(city).returnRowSize()+1):
+                for k in range(cities.returnArray(city).returnColumnSize()+1):
+                    if cities.returnArray(city).search(j,k) != None:
+                        if cities.returnArray(city).search(j,k).getColor() == "green":
+                            initialX=j
+                            initialY=k
+                            print(str(j))
+                            print(str(k))
+            rescueSelection2()
 
         elif cities.returnArray(city).getEntryCounter() == 0:
             warning3.place(x=375,y=10)
             warning3.config(text="No se detecto ninguna entrada")
+
+    
+
+def rescueSelection():
+    global initialY
+    global initialX
+    global robot
+    global city
+    robot = ""
+    global numberSelector 
+    numberSelector = 1
+
+    for i in robotRescueBox.curselection():
+        robot = robots.returnSelector(i+1,"ChapinRescue").getName()
+    
+    if robot != "":
+    
+        if cities.returnArray(city).getEntryCounter() > 1:                                                    
+            rescueFrame.pack_forget()
+            selectEntryFrame.pack(fill="both", expand="yes")
+            warning2.place(x=375,y=1060)
+            selectEntryBox.delete(0,END)
+            for j in range(cities.returnArray(city).returnRowSize()+1):
+                for k in range(cities.returnArray(city).returnColumnSize()+1):
+                    if cities.returnArray(city).search(j,k) != None:
+                        if cities.returnArray(city).search(j,k).getColor() == "green":
+                            selectEntryBox.insert(END, "Pos en x: {} Pos en y: {}".format(j,k))
+            
+
+                    
+        elif cities.returnArray(city).getEntryCounter() == 1:
+            for j in range(cities.returnArray(city).returnRowSize()+1):
+                for k in range(cities.returnArray(city).returnColumnSize()+1):
+                    if cities.returnArray(city).search(j,k) != None:
+                        if cities.returnArray(city).search(j,k).getColor() == "green":
+                            initialX=j
+                            initialY=k
+                            print(str(j))
+                            print(str(k))
+            rescueSelection2()
+
+        elif cities.returnArray(city).getEntryCounter() == 0:
+            warning3.place(x=375,y=10)
+            warning3.config(text="No se detecto ninguna entrada")
+
+
+
+def rescueSelection2():
+    global finalY
+    global finalX
+    if cities.returnArray(city).getCivilCounter() > 1:  
+        selectEntryFrame.pack_forget()
+        rescueFrame.pack_forget()                                                  
+        selectRescueFrame.pack(fill="both", expand="yes")
+        warning4.place(x=375,y=1060)
+        selectEntryBox.delete(0,END)
+        for j in range(cities.returnArray(city).returnRowSize()+1):
+            for k in range(cities.returnArray(city).returnColumnSize()+1):
+                if cities.returnArray(city).search(j,k) != None:
+                    if cities.returnArray(city).search(j,k).getColor() == "blue":
+                        selectRescueBox.insert(END, "Pos en x: {} Pos en y: {}".format(j,k))
+    elif cities.returnArray(city).getCivilCounter() == 1:
+        for j in range(cities.returnArray(city).returnRowSize()+1):
+            for k in range(cities.returnArray(city).returnColumnSize()+1):
+                if cities.returnArray(city).search(j,k) != None:
+                    if cities.returnArray(city).search(j,k).getColor() == "blue":
+                        finalX=j
+                        finalY=k
+                        print(str(j))
+                        print(str(k))
+        print("END")
+    elif cities.returnArray(city).getCivilCounter() == 0:
+        warning2.place(x=375,y=460)
+        warning2.config(text="No se detecto ninguna unidad civil a rescatar")
+
+def entryBack():
+    global numberSelector 
+    if numberSelector == 1:
+        rescueFrame.pack(fill="both", expand="yes")                                                       
+        selectEntryFrame.pack_forget()
+    else:
+        extractionFrame.pack(fill="both", expand="yes")                                                       
+        selectEntryFrame.pack_forget()
+
+
+def selectEntrySpace():
+    global initialX
+    global initialY
+
+    for i in selectEntryBox.curselection():
+        initialX=cities.returnArray(city).returnSelector(i+1, "green", 'x')
+        initialY=cities.returnArray(city).returnSelector(i+1, "green", 'y')
+        print('{},{}'.format(initialX, initialY))
+    rescueSelection2()
+    #SELECT MISION END
+
+def selectRescueSpace():
+    global finalX
+    global finalY
+
+    for i in selectRescueBox.curselection():
+        finalX=cities.returnArray(city).returnSelector(i+1, "blue", 'x')
+        finalY=cities.returnArray(city).returnSelector(i+1, "blue", 'y')
+        print('{},{}'.format(finalX, finalY))
+    print("END")
+    #SELECT MISION END
+
+def selectRescueBack():
+    selectRescueFrame.pack_forget()
+    if cities.returnArray(city).getEntryCounter() > 1:
+        selectEntryFrame.pack(fill="both", expand="yes") 
+        selectEntryBox.delete(0,END)
+        for j in range(cities.returnArray(city).returnRowSize()+1):
+            for k in range(cities.returnArray(city).returnColumnSize()+1):
+                if cities.returnArray(city).search(j,k) != None:
+                    if cities.returnArray(city).search(j,k).getColor() == "green":
+                        selectEntryBox.insert(END, "Pos en x: {} Pos en y: {}".format(j,k))                                                      
+    else:
+        rescueFrame.pack(fill="both", expand="yes")
+
 
     
     
@@ -244,6 +381,12 @@ robotFighterBox.place(x=130, y=75)
 robotRescueBox = Listbox(rescueFrame, height=18, width=110)
 robotRescueBox.place(x=130, y=75)
 
+selectEntryBox = Listbox(selectEntryFrame, height=18, width=110)
+selectEntryBox.place(x=130, y=75)
+
+selectRescueBox = Listbox(selectRescueFrame, height=18, width=110)
+selectRescueBox.place(x=130, y=75)
+
 #LIST BOX END
 
 
@@ -299,6 +442,32 @@ operationsExtractionBack.place(x=10, y=10)
 operationBack = Button(operationFrame, text="Regresar", width=15, height=3, command=operationFrameOff)
 operationBack.pack()
 operationBack.place(x=10, y=10)
+
+selectEntryBack = Button(selectEntryFrame, text="Regresar", width=15, height=3, command=entryBack)
+selectEntryBack.pack()
+selectEntryBack.place(x=10, y=10)
+
+selectRescueBackButton = Button(selectRescueFrame, text="Regresar", width=15, height=3, command=selectRescueBack)
+selectRescueBackButton.pack()
+selectRescueBackButton.place(x=10, y=10)
+
+checkEntryCity = Button(selectEntryFrame, text="Ver ciudad", width=15, height=3, command=graphSelectedArray)
+checkEntryCity.pack()
+checkEntryCity.place(x= 265, y=410)
+
+
+selectEntryCity = Button(selectEntryFrame, text="Seleccionar entrada", width=15, height=3, command=selectEntrySpace)
+selectEntryCity.pack()
+selectEntryCity.place(x= 465, y=410)
+
+checkRescueCity = Button(selectRescueFrame, text="Ver ciudad", width=15, height=3, command=graphSelectedArray)
+checkRescueCity.pack()
+checkRescueCity.place(x= 265, y=410)
+
+selectRescueCityButton = Button(selectRescueFrame, text="Seleccionar", width=15, height=3, command=selectRescueSpace)
+selectRescueCityButton.pack()
+selectRescueCityButton.place(x= 465, y=410)
+
 #BUTTONS END
 
 #Loop

@@ -37,11 +37,9 @@ class CityList:
                     if self.size >= 2:
                         if city > self.head.getCity():
                             if city > self.bottom.getCity():
-                                print("Numero " ,str(i))
                                 self.bottom.setNext(newCity)
                                 newCity.setBack(self.bottom)
                                 self.bottom = newCity
-                                print(self.bottom.getBack())
                                 self.size += 1
                                 break
                             elif city > pointer2.getCity():
@@ -76,7 +74,6 @@ class CityList:
                             break
 
     def returnArray(self, city):
-        print(city)
         pointer = self.head
         while pointer != None:
             if pointer.getCity() == city:
@@ -105,7 +102,6 @@ class CityList:
         var=""
         counter = 0
         for i in range(self.size):
-            print(pointer)
             counter +=1
             var += "Esta es una ciudad "+pointer.getCity()
             pointer = pointer.next
@@ -209,7 +205,6 @@ class RobotList:
 
     def returnSelector(self, index, type):
         printer = self.head
-        print(type)
         counter=0
         for i in range(self.size):
             if printer.getType() == type:

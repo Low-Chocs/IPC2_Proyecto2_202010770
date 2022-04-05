@@ -52,6 +52,12 @@ class CellNode:
     
     def setColor(self, color):
         self.color = color
+    
+    def getPosX(self):
+        return self.posX
+
+    def getPosY(self):
+        return self.posY
 
 class SparceMatrix:
 
@@ -165,38 +171,32 @@ class SparceMatrix:
         return self.entry
     
     def getValues(self):
-        print("Tuve un")
         return "La cantidad de entradas: {} La cantidad de recursos: {} La cantidad de unidades civiles: {}".format(self.entry, self.resourceCounter, self.civilUnit)
 
 
     def checkRow(self, row):
         header : HeaderNode = self.row.getHeader(row)
         if header == None:
-            print('Esa coordenada de row no existe')
             return None
             
         pointer : CellNode = header.getAccess()
         while pointer != None:
-            print(pointer.color)
             pointer = pointer.getNext()
 
     
     def checkColumn(self, column):
         header : HeaderNode = self.columns.getHeader(column)
         if header == None:
-            print('Esa coordenada de columna no existe')
             return None
-
         pointer : CellNode = header.getAccess()
         while pointer != None:
-            print(pointer.color)
             pointer = pointer.getDown()
     
-    def rowSize(self):
-        return self.rowSize
+    def returnRowSize(self):
+        return int(self.rowSize)
     
-    def columnSize(self):
-        return self.columnSize
+    def returnColumnSize(self):
+        return int(self.columnSize)
     
     def editRow(self):
         self.rowSize=0
@@ -231,6 +231,20 @@ class SparceMatrix:
         for i in range(1,self.rowSize+1):
             for j in range(1,self.columnSize+1):
                 print(self.showNode(i, j))
+
+    def returnSelector(self, index, color, pos):
+        counter=0
+        for i in range(self.rowSize + 1):
+            for j in range(self.columnSize + 1):
+                if self.search(i, j) != None:
+                    if self.search(i, j).getColor() == color:
+                        counter += 1
+                    if counter  == index and pos == 'x':
+                        return self.search(i, j).getPosX()
+                    elif counter  == index and pos == 'y':
+                        return self.search(i, j).getPosY()
+
+            
 
     def graphArray(self, city):
         graphArray = '''
@@ -329,7 +343,6 @@ class SparceMatrix:
         graphArray += '\n}'
 
         dot = "matriz.txt".format(city)
-        print("Ya llegue aqui")
         with open(dot, 'w') as grafo:
             grafo.write(graphArray)
         result = "matriz.pdf".format(city)
