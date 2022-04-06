@@ -2,6 +2,7 @@ from types import NoneType
 from nodes import CityNode
 from nodes import RobotNode 
 from nodes import HeaderNode
+from nodes import moveSetNode
 
 class CityList:
 
@@ -267,3 +268,83 @@ class HeaderList:
             pointer = pointer.next
         return None
 
+class moveSetList:
+
+    def __init__(self):
+        self.head= None
+        self.bottom= None
+        self.size = 0
+
+    def insert(self, posX, posY, options, direction):
+
+        move= moveSetNode(posX, posY, options, direction)
+
+        if self.head is None:
+            self.head = move
+            self.bottom=  move
+            self.head.setNext(self.bottom)
+            self.bottom.setBack(self.head)
+            self.size+=1
+        else:
+            
+            self.bottom.setNext(move)
+            move.setBack(self.bottom)
+            self.bottom = move
+            self.size+=1
+
+    def show(self):
+        pointer = self.head
+        for i in range(self.size):
+            print("libando jajaja")
+            print(i, 'Pos en x {} pos en y {} opciones {} movimiento {}'.format(pointer.getPosX(), pointer.getPosY(), pointer.getOptions(), pointer.getDirection()))
+            pointer = pointer.getNext()
+
+    def showInReverse(self):
+        pointer = self.bottom
+        for i in range(self.size):
+            print(i, 'Pos en x {} pos en y {} opciones {}'.format(pointer.getPosX(), pointer.getPosY(), pointer.getOptions()))
+            pointer = pointer.getBack()
+
+    def findLastOptions(self):
+        pointer = self.bottom
+        for i in range(self.size):
+            print(i, 'Pos en x {} pos en y {} opciones {}'.format(pointer.getPosX(), pointer.getPosY(), pointer.getOptions()))
+            pointer = pointer.getBack()
+
+    def discard(self):
+        pointer = self.bottom
+        for i in range(self.size):
+            print(str(pointer.getOptions()))
+            if pointer.getOptions() == 1:
+                pointer.setOptions(pointer.getOptions()-1)
+            elif pointer.getOptions() > 1:
+                print("pase")
+                pointer.setOptions(pointer.getOptions()-1)
+                print("Hola mundo", pointer.getPosX())
+                print("Hola mundo2", pointer.getPosY())
+                return pointer
+            pointer = pointer.getBack()
+    
+    def discard2(self):
+        pointer = self.bottom
+        for i in range(self.size):
+            print(str(pointer.getOptions()))
+            if pointer.getOptions() > 1:
+                return True
+            pointer = pointer.getBack()
+        return False
+    
+    def len(self):
+        return self.size
+    
+    def getBackward(self):
+        return self.bottom.getBack()
+
+    def check(self, posX, posY):
+        pointer = self.head
+        for i in range(self.size):
+            if pointer.getPosX() == posX and pointer.getPosY() == posY:
+                return False
+            pointer = pointer.getNext()
+        
+        return True

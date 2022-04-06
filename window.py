@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import N, filedialog
+from typing import final
 from PIL import ImageTk, Image
 from matplotlib.pyplot import text
 from numpy import number
@@ -7,6 +8,7 @@ from Array import SparceMatrix
 from lists import CityList
 from lists import RobotList
 from loadXml import loadXml
+from lists import moveSetList
 
 loadedFile = False
 selectedCity = False
@@ -161,7 +163,7 @@ def extractSelection():
                             initialY=k
                             print(str(j))
                             print(str(k))
-            rescueSelection2()
+            rescueSelection3()
 
         elif cities.returnArray(city).getEntryCounter() == 0:
             warning3.place(x=375,y=10)
@@ -241,6 +243,34 @@ def rescueSelection2():
         warning2.place(x=375,y=460)
         warning2.config(text="No se detecto ninguna unidad civil a rescatar")
 
+def rescueSelection3():
+    global finalY
+    global finalX
+    if cities.returnArray(city).getCivilCounter() > 1:  
+        selectEntryFrame.pack_forget()
+        rescueFrame.pack_forget()                                                  
+        selectRescueFrame.pack(fill="both", expand="yes")
+        warning4.place(x=375,y=1060)
+        selectEntryBox.delete(0,END)
+        for j in range(cities.returnArray(city).returnRowSize()+1):
+            for k in range(cities.returnArray(city).returnColumnSize()+1):
+                if cities.returnArray(city).search(j,k) != None:
+                    if cities.returnArray(city).search(j,k).getColor() == "gray":
+                        selectRescueBox.insert(END, "Pos en x: {} Pos en y: {}".format(j,k))
+    elif cities.returnArray(city).getCivilCounter() == 1:
+        for j in range(cities.returnArray(city).returnRowSize()+1):
+            for k in range(cities.returnArray(city).returnColumnSize()+1):
+                if cities.returnArray(city).search(j,k) != None:
+                    if cities.returnArray(city).search(j,k).getColor() == "gray":
+                        finalX=j
+                        finalY=k
+                        print(str(j))
+                        print(str(k))
+        print("END")
+    elif cities.returnArray(city).getCivilCounter() == 0:
+        warning2.place(x=375,y=460)
+        warning2.config(text="No se detecto ninguna unidad civil a rescatar")
+
 def entryBack():
     global numberSelector 
     if numberSelector == 1:
@@ -254,23 +284,40 @@ def entryBack():
 def selectEntrySpace():
     global initialX
     global initialY
+    global numberSelector
+    selectRescueBox.delete(0,END)
 
     for i in selectEntryBox.curselection():
-        initialX=cities.returnArray(city).returnSelector(i+1, "green", 'x')
-        initialY=cities.returnArray(city).returnSelector(i+1, "green", 'y')
+        initialX = cities.returnArray(city).returnSelector(i+1, "green", 'x')
+        initialY = cities.returnArray(city).returnSelector(i+1, "green", 'y')
         print('{},{}'.format(initialX, initialY))
-    rescueSelection2()
+    if numberSelector == 1:
+        rescueSelection2()
+    else:
+        rescueSelection3()
     #SELECT MISION END
 
 def selectRescueSpace():
+    global initialX
+    global initialY
     global finalX
     global finalY
+    global numberSelector
+    global robot
 
     for i in selectRescueBox.curselection():
-        finalX=cities.returnArray(city).returnSelector(i+1, "blue", 'x')
-        finalY=cities.returnArray(city).returnSelector(i+1, "blue", 'y')
-        print('{},{}'.format(finalX, finalY))
-    print("END")
+        if numberSelector == 1:
+            finalX = cities.returnArray(city).returnSelector(i+1, "blue", 'x')
+            finalY = cities.returnArray(city).returnSelector(i+1, "blue", 'y')
+            print('{},{}'.format(finalX, finalY))
+            cities.returnArray(city).misionArray(initialX, initialY, finalX, finalY, robots.returnRobot(robot))
+        else:
+            finalX = cities.returnArray(city).returnSelector(i+1, "gray", 'x')
+            finalY = cities.returnArray(city).returnSelector(i+1, "gray", 'y')
+            print('{},{}'.format(finalX, finalY))
+            cities.returnArray(city).misionArray(initialX, initialY, finalX, finalY, robots.returnRobot(robot))
+
+    
     #SELECT MISION END
 
 def selectRescueBack():
@@ -464,7 +511,7 @@ checkRescueCity = Button(selectRescueFrame, text="Ver ciudad", width=15, height=
 checkRescueCity.pack()
 checkRescueCity.place(x= 265, y=410)
 
-selectRescueCityButton = Button(selectRescueFrame, text="Seleccionar", width=15, height=3, command=selectRescueSpace)
+selectRescueCityButton = Button(selectRescueFrame, text="Graficar", width=15, height=3, command=selectRescueSpace)
 selectRescueCityButton.pack()
 selectRescueCityButton.place(x= 465, y=410)
 

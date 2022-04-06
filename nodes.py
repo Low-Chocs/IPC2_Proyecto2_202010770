@@ -98,4 +98,51 @@ class HeaderNode():
     
     def setId(self, id):
         self.id=id
+    
+class moveSetNode:
+
+    def __init__(self, posX, posY, options, direction):
+        self.posX = posX
+        self.posY = posY
+        self.direction = direction
+        self.options = options
+        self.next = None
+        self.back = None
+        self.satus = True
+
+    def getStatus(self):
+        return self.status
+
+    def setStatus(self):
+        self.status = False
+
+    def getNext(self):
+        return self.next
+    
+    def getDirection(self):
+        return self.direction
+    
+    def setNext(self, next):
+        self.next=next
+
+    def getBack(self):
+        return self.back
+    
+    def setBack(self, back):
+        self.back=back
+
+    def getPosX(self):
+        return self.posX
+    
+    def getPosY(self):
+        return self.posY
+    
+    def getOptions(self):
+        return self.options
+    
+    def setOptions(self, options):
+        self.options = options
+
+
+
 

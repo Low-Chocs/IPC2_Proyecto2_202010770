@@ -1,7 +1,7 @@
-from re import X
-from pyparsing import col
-from nodes import HeaderNode
+from nodes import HeaderNode, RobotNode
 from lists import HeaderList
+from lists import RobotList
+from lists import moveSetList
 import webbrowser
 import os
 
@@ -242,9 +242,7 @@ class SparceMatrix:
                     if counter  == index and pos == 'x':
                         return self.search(i, j).getPosX()
                     elif counter  == index and pos == 'y':
-                        return self.search(i, j).getPosY()
-
-            
+                        return self.search(i, j).getPosY()         
 
     def graphArray(self, city):
         graphArray = '''
@@ -348,5 +346,215 @@ class SparceMatrix:
         result = "matriz.pdf".format(city)
         os.system("neato -Tpdf " + dot + " -o " + result)
         webbrowser.open(result) 
+        
+
+    def misionArray(self, inicialX, inicialY, finalX, finalY, robot):
+        moveList = moveSetList()
+        pointer: CellNode = self.search(inicialX, inicialY)
+        corrida = 0
+        while pointer != self.search(finalX, finalY):
+            corrida += 1
+            option = 0
+            isUpPossible = False
+            isRightPossible = False
+            isLeftPossible = False
+            isDownPossible = False
+            notPossible = 0
+
+            if pointer.getUp() != None:
+                if pointer.getUp().getColor() == 'black':
+                    notPossible += 1
+                elif pointer.getUp().getColor() == 'red':
+                    if robot.getCapacity() >= pointer.getCapacity():
+                        pointer.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        robot.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        option += 1
+                        isUpPossible = True
+                    else:
+                        notPossible += 1
+                elif pointer.getUp().getColor() != 'red' and pointer.getUp().getColor() != 'black':
+                    option += 1
+                    isUpPossible = True
+                else:
+                    notPossible += 1
+            else:
+                notPossible += 1
+            if pointer.getNext() != None:
+                if pointer.getNext().getColor() == 'black':
+                    notPossible += 1
+                elif pointer.getNext().getColor() == 'red':
+                    if robot.getCapacity() >= pointer.getCapacity():
+                        pointer.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        robot.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        isRightPossible = True
+                        option += 1
+                    else:
+                        notPossible += 1
+                elif pointer.getNext().getColor() != 'red' and pointer.getNext().getColor() != 'black':
+                    option += 1
+                    isRightPossible = True
+                else:
+                    notPossible += 1
+            else:
+                notPossible += 1
+            
+            if pointer.getBack() != None:
+                if pointer.getBack().getColor() == 'black':
+                    notPossible += 1
+                elif pointer.getBack().getColor() == 'red':
+                    if robot.getCapacity() >= pointer.getCapacity():
+                        pointer.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        robot.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        option += 1
+                        isLeftPossible = True
+                    else:
+                        notPossible += 1
+                elif pointer.getBack().getColor() != 'red' and pointer.getBack().getColor() != 'black':
+                    option += 1
+                    isLeftPossible = True
+                else:
+                    notPossible += 1
+            else:
+                notPossible += 1
+
+            if pointer.getDown() != None:
+                if pointer.getDown().getColor() == 'black':
+                    notPossible += 1
+                if pointer.getDown().getColor() == 'red':
+                    if robot.getCapacity() >= pointer.getCapacity():
+                        pointer.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        robot.setCapacity(pointer.getCapacity()-robot.getCapacity())
+                        option += 1
+                        isDownPossible = True
+                    else:
+                        notPossible += 1
+                elif pointer.getDown().getColor() != 'red' and pointer.getDown().getColor() != 'black':
+                    option += 1
+                    isDownPossible = True
+                else:
+                    notPossible += 1
+            else:
+                notPossible += 1
+
+            if moveList.len() > 0:
+                if isUpPossible:
+                    if moveList.check(pointer.getUp().getPosX(), pointer.getUp().getPosY()):
+                        pass
+                    else:
+                        isRightPossible = False
+                        option -= 1
+                        notPossible += 1
+
+                if isRightPossible:
+                    if moveList.check(pointer.getNext().getPosX(), pointer.getNext().getPosY()):
+                        pass
+                    else:
+                        isRightPossible = False
+                        option -= 1
+                        notPossible += 1
+                        
+                if isLeftPossible:
+                    if moveList.check(pointer.getBack().getPosX(), pointer.getBack().getPosY()):
+                        pass
+                    else:
+                        isLeftPossible = False
+                        option -= 1
+                        notPossible += 1
+                        
+                if isDownPossible:
+                    if moveList.check(pointer.getDown().getPosX(), pointer.getDown().getPosY()):
+                         pass
+                    else:
+                        isDownPossible = False
+                        option -= 1
+                        notPossible += 1
+
+
+                if isUpPossible:
+                    if moveList.check(pointer.getUp().getPosX(), pointer.getUp().getPosY()):
+                        print(option)
+                        moveList.insert(pointer.getPosX(), pointer.getPosY(), option, 'up')
+                        pointer = pointer.getUp()
+                        continue
+                    else:
+                        option -= 1
+                        notPossible += 1
+                        pass
+                        
+                        
+
+                if isRightPossible:
+                    if moveList.check(pointer.getNext().getPosX(), pointer.getNext().getPosY()):
+                        moveList.insert(pointer.getPosX(), pointer.getPosY(), option, 'right')
+                        pointer = pointer.getNext()
+                        continue
+                    else:
+                        option -= 1
+                        notPossible += 1
+                        pass
+                        
+                
+                if isLeftPossible:
+                    if moveList.check(pointer.getBack().getPosX(), pointer.getBack().getPosY()):
+                        moveList.insert(pointer.getPosX(), pointer.getPosY(), option, 'left')
+                        pointer = pointer.getBack()
+                        continue
+                    else:
+                        option -= 1
+                        notPossible += 1
+                        pass
+                                
+                if isDownPossible:
+
+                    if moveList.check(pointer.getDown().getPosX(), pointer.getDown().getPosY()):
+                        moveList.insert(pointer.getPosX(), pointer.getPosX(), option, 'down')
+                        pointer = pointer.getDown()
+                        continue
+                    else:
+                        option -= 1
+                        notPossible += 1
+                        pass
+
+            else:
+                if isUpPossible:
+                        moveList.insert(pointer.getPosX(), pointer.getPosY(), option, 'up')
+                        pointer = pointer.getUp()
+                        continue
+                        
+                elif isRightPossible:
+                        moveList.insert(pointer.getPosX(), pointer.getPosY(), option, 'right')
+                        pointer = pointer.getNext()
+                        print(pointer.getPosX())
+                        continue
+                        
+                elif isLeftPossible:
+                        moveList.insert(pointer.getPosX(), pointer.getPosY(), option, 'left')
+                        pointer = pointer.getBack()
+                        continue
+                        
+                elif isDownPossible:
+                        moveList.insert(pointer.getPosX(), pointer.getPosY(), option, 'down')
+                        pointer = pointer.getDown()
+                        continue
+
+            moveList.show()
+
+            if notPossible == 4:
+                if moveList.len() <= 1: 
+                    moveList.show()
+                    break 
+                else:
+                    if moveList.discard2():
+                        aleluya = moveList.discard()
+                        pointer = self.search(aleluya.getPosX()-1, aleluya.getPosY()-1)
+                        print("Este es el color " + pointer.getColor())
+                        continue
+                    else:
+                        moveList.show()
+                        break 
+
+
+
+                         
 
                 
