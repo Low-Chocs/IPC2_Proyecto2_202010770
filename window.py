@@ -242,6 +242,7 @@ def rescueSelection2():
     elif cities.returnArray(city).getCivilCounter() == 0:
         warning2.place(x=375,y=460)
         warning2.config(text="No se detecto ninguna unidad civil a rescatar")
+        print("No se detecto ninguna unidad civil a rescatar")
 
 def rescueSelection3():
     global finalY
@@ -269,7 +270,8 @@ def rescueSelection3():
         print("END")
     elif cities.returnArray(city).getCivilCounter() == 0:
         warning2.place(x=375,y=460)
-        warning2.config(text="No se detecto ninguna unidad civil a rescatar")
+        warning2.config(text="No se detecto ninguna recurso a extraer")
+        print("No se detecto ningun recurso a extraer")
 
 def entryBack():
     global numberSelector 
